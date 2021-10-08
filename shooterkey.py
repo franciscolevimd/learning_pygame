@@ -79,6 +79,7 @@ score = 0
 all_sprites = pygame.sprite.Group()
 meteors = pygame.sprite.Group()
 lasers = pygame.sprite.Group()
+sound = pygame.mixer.Sound(LASER_SOUND_NAME)
 
 ship = Ship()
 all_sprites.add(ship)
@@ -108,6 +109,7 @@ while not game_over:
                 laser.rect.y = ship.rect.y - LASER_POSITION_Y
                 all_sprites.add(laser)
                 lasers.add(laser)
+                sound.play()
         elif event.type == pygame.KEYUP:
             if pygame.K_LEFT == event.key:
                 ship.changes_speed(SHIP_RIGHT_DISPLACEMENT)
