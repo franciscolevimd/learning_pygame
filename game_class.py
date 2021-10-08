@@ -46,6 +46,7 @@ class Ship(pygame.sprite.Sprite):
 
 class Game(object):
     def __init__(self):
+        self.game_over = False
         self.score = 0
         self.meteors = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
@@ -64,6 +65,9 @@ class Game(object):
                 return True
             elif event.type == pygame.KEYDOWN and pygame.K_ESCAPE == event.key:
                 return True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.game_over:
+                    self.__init__()
         return False
 
     def run_logic(self):
@@ -73,10 +77,19 @@ class Game(object):
         for meteor in meteors_hit:
             self.score += 1
             print(self.score)
+        if len(self.meteors) == 0:
+            self.game_over = True
 
     def display_frame(self, screen):
         screen.fill(WHITE)
-        self.all_sprites.draw(screen)
+        if self.game_over:
+            font = pygame.font.SysFont("serif", 25)
+            text = font.render('Game Over, Click To Continue', True, BLACK)
+            center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
+            center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
+            screen.blit(text, [center_x, center_y])
+        else:
+            self.all_sprites.draw(screen)
         pygame.display.flip()
 
 
