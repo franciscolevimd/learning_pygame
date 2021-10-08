@@ -21,9 +21,12 @@ LASER_POSITION_X = 45
 LASER_POSITION_Y = 20
 END_LASER_ROUTE = -10
 LASER_DISPLACEMENT = 5
+SHIP_LEFT_DISPLACEMENT = -3
+SHIP_RIGHT_DISPLACEMENT = 3
 SHIP_SPRITE_NAME = "ship.png"
 METEOR_SPRITE_NAME = "meteor.png"
 LASER_SPRITE_NAME = "laser.png"
+LASER_SOUND_NAME = "laser5.ogg"
 
 
 class Meteor(pygame.sprite.Sprite):
@@ -42,12 +45,14 @@ class Ship(pygame.sprite.Sprite):
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.x = SHIP_POSITION_X
+        self.speed_x = 0
+        self.speed_y = 0
+
+    def changes_speed(self, x):
+        self.speed_x += x
 
     def update(self):
-        if self.despl_x[0]:
-            self.rect.x -= 7
-        elif self.despl_x[1]:
-            self.rect.x += 7
+        self.rect.x += self.speed_x
         self.rect.y = SHIP_POSITION_Y
 
 
@@ -94,11 +99,9 @@ while not game_over:
             if pygame.K_ESCAPE == event.key:
                 game_over = True
             elif pygame.K_LEFT == event.key:
-                ship.despl_x[1] = False
-                ship.despl_x[0] = True
+                ship.changes_speed(SHIP_LEFT_DISPLACEMENT)
             elif pygame.K_RIGHT == event.key:
-                ship.despl_x[0] = False
-                ship.despl_x[1] = True
+                ship.changes_speed(SHIP_RIGHT_DISPLACEMENT)
             elif pygame.K_SPACE == event.key:
                 laser = Laser()
                 laser.rect.x = ship.rect.x + LASER_POSITION_X
@@ -107,10 +110,9 @@ while not game_over:
                 lasers.add(laser)
         elif event.type == pygame.KEYUP:
             if pygame.K_LEFT == event.key:
-                ship.despl_x[0] = False
+                ship.changes_speed(SHIP_RIGHT_DISPLACEMENT)
             elif pygame.K_RIGHT == event.key:
-                ship.despl_x[1] = False
-
+                ship.changes_speed(SHIP_LEFT_DISPLACEMENT)
     # >----- GAME LOGIC
     all_sprites.update()
     for laser in lasers:
